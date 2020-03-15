@@ -6,7 +6,7 @@ function monte_carlo(n)
   k = 10; 
   Q = norminv((y + 1) / 2);
   X = rand(k, n);
-  F_x = sum(arrayfun(@(x) exp(-0.35*x), X));
+  F_x = sum(exp(-0.35 .* X));
   In = mean(F_x <= c);
   delta = Q * sqrt(In * (1 - In) / n);
   printf("N = %d\n", n);
