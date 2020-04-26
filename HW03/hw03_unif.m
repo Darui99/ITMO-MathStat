@@ -1,4 +1,6 @@
 pkg load statistics;
+clear;
+clc;
 
 function draw_plot(n, a, b, u)
   x = sort(unifrnd(a, b, n, 1));
@@ -24,12 +26,28 @@ function ans = kolmogorov_test(n, m, a, b, u)
   ans = mean((sqrt(n) * res) > u);
 endfunction
 
+function ans = smirnov_test(n, m, a, b, w)
+  x = sort(unifrnd(a, b, n, m));
+  sum = 1 / (12 * n);
+  
+  for i = 1:n
+    F_x_i = unifcdf(x(i, :), a, b);
+    sum = sum + (F_x_i - (2 * i - 1) / (2 * n)).^2;
+  endfor
+  
+  ans = mean(sum > w);
+endfunction
+
 n = 100;
 a = 13;
 b = 37;
 u = 1.36;
+w = 0.4614;
 draw_plot(n, a, b, u);
 m1 = 10^4;
 m2 = 10^6;
-printf("n = %d: alpha = %g\n\n", m1, kolmogorov_test(n, m1, a, b, u));
-printf("n = %d: alpha = %g\n\n", m2, kolmogorov_test(n, m2, a, b, u));
+
+printf("Kolmogorov's test: n = %d, alpha = %g\n\n", m1, kolmogorov_test(n, m1, a, b, u));
+printf("Smirnov's test: n = %d, alpha = %g\n\n", m1, smirnov_test(n, m1, a, b, w));
+printf("Kolmogorov's test: n = %d, alpha = %g\n\n", m2, kolmogorov_test(n, m2, a, b, u));
+printf("Smirnov's test: n = %d, alpha = %g\n\n", m2, smirnov_test(n, m2, a, b, w));
